@@ -1,2 +1,15 @@
 # debait
-A forum for debate.
+
+An online forum for debating and discussing various topics.
+* Users can start discussion threads with a tag. This tag determines the space in which the thread is stored in the application. A tag is essentially a channel.
+* Users can scroll through threads that belong to a certain tag. Threads can be upvoted and downvoted.
+* Users can read threads and send messages to them. Messages can be upvoted and downvoted.
+* Thread authors (OPs) are admins in their own threads. They can pin messages and delete them.
+* Thread authors can also modify the title and initial post of the thread. The edits will, however, be tracked and visible to everyone reading the thread for transparency.
+* Users can create accounts and log in and out. This is a requirement for interacting.
+* Users can subscribe to tags and threads in these tags will appear in their personal feeds. (Some kind of recommendation algorithm?)
+* Users can scroll through a list of popular tags. They can also search tags and threads globally and within a tag.
+* Admin users who have permissions to delete messages and threads and ban users from engaging in a thread or a tag.
+* About me page and profile view? Viewing user activity for transparency?
+* Other fun stuff such as markdown support, embeds (at least images), interactive elements such as polls?
+
