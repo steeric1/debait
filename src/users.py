@@ -29,9 +29,9 @@ class User:
         query = """SELECT (uid) FROM users WHERE name=:name"""
         result = db.execute(query, {"name": name})
 
-        user_id = result.fetchone()
-        if user_id:
-            return User(user_id, name)
+        user = result.fetchone()
+        if user:
+            return User(user[0], name)
         else:
             return None
 
@@ -44,10 +44,24 @@ class User:
         db.execute(query, {"uuid": user_id, "username": username, "password": hash})
         db.commit()
 
-        return User(user_id, username)
-
 
     @staticmethod
-    def login(user_id: UUID):
-        session["user_id"] = user_id
+    def login(username: str, password: str):
+        user = User.get_by_name(username)
+        if user and check_password_hash(User.get_pwhash(user.id), password):
+            session["user_id"] = user.id
+            return True
+        else:
+            return False
+            
+
+    @staticmethod
+    def get_pwhash(user_id: UUID):
+        query = """SELECT (password) FROM users WHERE uid=:user_id"""
+        result = db.execute(query, {"user_id": user_id})
+
+        row = result.fetchone()
+        return row[0] if row else None
+
+         
         

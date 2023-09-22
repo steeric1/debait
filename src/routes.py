@@ -16,8 +16,15 @@ def register(app: Flask):
 
     @app.route("/login", methods=["POST"])
     def handle_login():
-        print(request.form)
-        return redirect("/")
+        form = request.form
+
+        if not all([form["username"], form["password"]]):
+            return render_template("login.html", error="All required fields were not provided."), 400
+
+        if User.login(form["username"], form["password"]):
+            return redirect("/")
+        else:
+            return render_template("login.html", error="Incorrect username or password.")
 
     @app.route("/register")
     def register():
@@ -41,8 +48,8 @@ def register(app: Flask):
         if error:
             return render_template("register.html", error=error), 400
         else:
-            user = User.create(username, password)
-            User.login(user.id)
+            User.create(username, password)
+            User.login(username, password)
 
             return redirect("/")
 
