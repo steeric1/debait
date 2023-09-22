@@ -1,24 +1,30 @@
 <title>Debait - Register</title>
 <h1>Register to Debait</h1>
 
+{% if error %}
+<p>
+    {{ error }}
+</p>
+{% endif %}
+
 <form method="POST">
     <label for="username">
         Username:
-        <input type="text" id="username" name="username">
+        <input type="text" id="username" name="username" required>
     </label>
 
     <br>
 
     <label for="password">
         Password:
-        <input type="password" id="password" name="password">
+        <input type="password" id="password" name="password" required>
     </label>
 
     <br>
 
     <label for="confirm-password">
         Confirm password:
-        <input type="password" id="confirm-password" name="confirm-password">
+        <input type="password" id="confirm-password" name="confirm-password" required>
     </label>
 
     <br>

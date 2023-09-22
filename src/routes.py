@@ -1,5 +1,6 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, url_for
 from users import User
+import base64
 
 
 def register(app: Flask):
@@ -15,6 +16,7 @@ def register(app: Flask):
 
     @app.route("/login", methods=["POST"])
     def handle_login():
+        print(request.form)
         return redirect("/")
 
     @app.route("/register")
@@ -23,5 +25,36 @@ def register(app: Flask):
     
     @app.route("/register", methods=["POST"])
     def handle_register():
-        return redirect("/")
+        form = request.form
+        error = None
 
+        if not all([form["username"], form["password"], form["confirm-password"]]):
+            error = "All required fields were not provided."
+        else:
+            username, password, confirm_password = form["username"], form["password"], form["confirm-password"]
+
+            if password != confirm_password:
+                error = "The passwords do not match."
+            elif User.get_by_name(username) is not None:
+                error = "A username by that name exists already."
+
+        if error:
+            return render_template("register.html", error=error), 400
+        else:
+            user = User.create(username, password)
+            User.login(user.id)
+
+            return redirect("/")
+
+
+def encode_param(param: str):
+    return base64.b64encode(param.encode())
+
+
+def decode_param(param: bytes):
+    try:
+        decoded = base64.b64decode(param).decode()
+    except:
+        decoded = "" 
+
+    return decoded
