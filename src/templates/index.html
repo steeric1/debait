@@ -1,0 +1,8 @@
+<title>Debait - Forum for Debate</title>
+<h1>Debait</h1>
+
+{% if user %}
+    <p>You're logged in as {{ user.name }}</p>
+{% else %}
+    <p>You're not logged in. <a href="/login">Log in.</a></p>
+{% endif %}

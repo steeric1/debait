@@ -18,6 +18,7 @@ class User:
             result = db.execute(query)
 
             name = result.fetchone()
-            return User(curr_id, name)
-        else:
-            return None
+            if name:
+                return User(curr_id, name)
+        
+        return None
