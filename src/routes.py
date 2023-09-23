@@ -12,6 +12,9 @@ def register(app: Flask):
 
     @app.route("/login")
     def login():
+        if User.current() is not None:
+            return redirect("/")
+
         return render_template("login.html")
 
     @app.route("/login", methods=["POST"])
@@ -52,6 +55,11 @@ def register(app: Flask):
             User.login(username, password)
 
             return redirect("/")
+
+    @app.route("/logout", methods=["POST"])
+    def logout():
+        User.logout()
+        return redirect("/")
 
 
 def encode_param(param: str):

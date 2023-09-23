@@ -63,5 +63,9 @@ class User:
         row = result.fetchone()
         return row[0] if row else None
 
+    @staticmethod
+    def logout():
+        session["user_id"] = None
+
          
         
