@@ -13,3 +13,13 @@ CREATE TABLE posts (
     posted_at timestamp,
     FOREIGN KEY(author_id) REFERENCES users(uid) ON DELETE SET NULL
 );
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    post_id INT,
+    content TEXT,
+    author_id UUID,
+    commented_at timestamp,
+    FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY(author_id) REFERENCES users(uid) on DELETE SET NULL
+);
