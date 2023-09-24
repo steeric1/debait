@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort
 from users import User
 from posts import Post
+from comments import Comment
 import base64
 
 
@@ -76,7 +77,8 @@ def register(app: Flask):
     def post_get(id: int):
         post = Post.get_by_id(id)
         if post:
-            return render_template("post.html", post=post)
+            comments = Comment.comments_to_post(post.id)
+            return render_template("post.html", post=post, user=User.current(), comments=comments)
             
         abort(404)
 
@@ -94,6 +96,19 @@ def register(app: Flask):
         title, content = form["title"], form["content"]
 
         Post.create(tag, title, content, user)
+        return ""
+
+    @app.post("/comment/<post_id>")
+    def comment(post_id: int):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        form = request.form
+        if not form["content"]:
+            abort(400)
+
+        Comment.create(post_id, form["content"], user)
         return ""
 
 
