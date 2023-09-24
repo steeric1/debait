@@ -1,0 +1,74 @@
+<title>Debait - {{ tag }}</title>
+<h1>{{ tag }}</h1>
+
+{% if user %}
+    <form id="post-form">
+        <h3>Create post</h3>
+
+        <label for="title">
+            Title:
+            <input type="text" id="title" name="title">
+        </label>
+
+        <br>
+        <br>
+
+        <label for="content">
+            Content:
+        </label>
+
+        <br>
+        
+        <textarea id="content" name="content" cols="50" rows="10"></textarea>
+
+        <br>
+        <br>
+
+        <input type="submit" value="Submit">
+    </form>
+{% else %}
+    <a href="/login">Login</a> to post on this tag.
+{% endif %}
+
+<h3>Posts</h3>
+
+{% for post in posts %}
+    <p>
+        <strong>{{ post.title }}</strong>
+        -
+        {% if post.content|length <= 100 %}
+            {{ post.content }}
+        {% else %}
+            {{ post.content[:100] }}...
+        {% endif %}
+        <br>
+        - <strong>posted by</strong> {{ post.author.name }} <strong>at</strong> {{ post.timestamp }}
+        <br>
+        <a href="/post/{{ post.id }}">Read</a>
+    </p>
+{% endfor %}
+
+<script>
+    let form = document.getElementById("post-form");
+    form.onsubmit = (event) => {
+        event.preventDefault();
+        
+        let payload = {
+            "title": document.getElementById("title").value,
+            "content": document.getElementById("content").value,
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tag = urlParams.get("tag");
+
+        fetch(`post/${tag}`, {
+            method: "POST",
+            headers:{
+                "Content-Type": "application/x-www-form-urlencoded"
+            },    
+            body: new URLSearchParams(payload)
+        });
+
+        window.location.reload();
+    }
+</script>

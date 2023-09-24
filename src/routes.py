@@ -1,23 +1,24 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, abort
 from users import User
+from posts import Post
 import base64
 
 
 def register(app: Flask):
-    @app.route("/")
+    @app.get("/")
     def index():
         user = User.current()
         print(user)
         return render_template("index.html", user=user)
 
-    @app.route("/login")
+    @app.get("/login")
     def login():
         if User.current() is not None:
             return redirect("/")
 
         return render_template("login.html")
 
-    @app.route("/login", methods=["POST"])
+    @app.post("/login")
     def handle_login():
         form = request.form
 
@@ -29,11 +30,11 @@ def register(app: Flask):
         else:
             return render_template("login.html", error="Incorrect username or password.")
 
-    @app.route("/register")
+    @app.get("/register")
     def register():
         return render_template("register.html")
     
-    @app.route("/register", methods=["POST"])
+    @app.post("/register")
     def handle_register():
         form = request.form
         error = None
@@ -56,10 +57,44 @@ def register(app: Flask):
 
             return redirect("/")
 
-    @app.route("/logout", methods=["POST"])
+    @app.post("/logout")
     def logout():
         User.logout()
         return redirect("/")
+
+    @app.get("/browse")
+    def browse():
+        tag = request.args.get("tag")
+        if tag:
+            posts = Post.get_posts(tag)
+            print(posts)
+            return render_template("tag.html", tag=tag, posts=posts, user=User.current())
+        
+        abort(404)
+
+    @app.get("/post/<id>")
+    def post_get(id: int):
+        post = Post.get_by_id(id)
+        if post:
+            return render_template("post.html", post=post)
+            
+        abort(404)
+
+    @app.post("/post/<tag>")
+    def post_post(tag: str):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        form = request.form
+
+        if not all([form["title"], form["content"]]):
+            abort(400)
+        
+        title, content = form["title"], form["content"]
+
+        Post.create(tag, title, content, user)
+        return ""
 
 
 def encode_param(param: str):

@@ -36,6 +36,14 @@ class User:
             return None
 
     @staticmethod
+    def get_by_id(id: UUID):
+        query = """SELECT name FROM users WHERE uid=:uid"""
+        result = db.execute(query, {"uid": id})
+
+        row = result.fetchone()
+        return User(id, row[0]) if row else None
+
+    @staticmethod
     def create(username: str, password: str):
         hash = generate_password_hash(password)
         user_id = uuid4()

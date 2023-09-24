@@ -9,3 +9,11 @@
 {% else %}
     <p>You're not logged in. <a href="/login">Log in.</a></p>
 {% endif %}
+
+<form action="/browse" method="GET">
+    <h3>Browse tags</h3>
+    <label for="tag">Tag: <input type="text" id="tag" name="tag"></label>
+    <br>
+    <br>
+    <input type="submit" value="Go">
+</form>
