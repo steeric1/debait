@@ -1,5 +1,32 @@
 # debait
 
+## Currently implemented features
+
+* Registering, logging in and out
+* Browsing tags
+* Creating posts on tags and reading them
+* Commenting posts
+
+## How to run
+
+*Prerequisite*: A PostgreSQL instance running. Create the schema for this application using `init_db.sql`
+
+Install dependencies:
+```
+pip install -r requirements.txt
+```
+
+Create an `.env` file with the following variables defined:
+* `DATABASE_URL` for the URL of your PostgreSQL database
+* `SECRET_KEY` for the secret key of the Flask application
+
+Run the application with
+```
+flask --app src/app.py run
+```
+
+## Plan
+
 An online forum for debating and discussing various topics.
 * Users can start discussion threads with a tag. This tag determines the space in which the thread is stored in the application. A tag is essentially a channel.
 * Users can scroll through threads that belong to a certain tag. Threads can be upvoted and downvoted.
