@@ -15,7 +15,6 @@ class Post:
     content: str
     author: User
     timestamp: datetime
-    
 
     @staticmethod
     def get_posts(tag: str):
@@ -23,7 +22,9 @@ class Post:
         result = db.execute(query, {"tag": tag})
 
         rows = result.fetchall()
-        posts = list(map(lambda row: Post(*row[:4], User.get_by_id(row[4]), row[5]), rows))
+        posts = list(
+            map(lambda row: Post(*row[:4], User.get_by_id(row[4]), row[5]), rows)
+        )
 
         return posts
 
@@ -41,8 +42,8 @@ class Post:
                 "title": title,
                 "content": content,
                 "author": author.id,
-                "timestamp": datetime.now().strftime(POST_TIMESTAMP_FORMAT)
-            }
+                "timestamp": datetime.now().strftime(POST_TIMESTAMP_FORMAT),
+            },
         )
         db.commit()
 

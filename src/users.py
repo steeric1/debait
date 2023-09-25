@@ -21,7 +21,7 @@ class User:
             user = result.fetchone()
             if user:
                 return User(curr_id, user[0])
-        
+
         return None
 
     @staticmethod
@@ -52,7 +52,6 @@ class User:
         db.execute(query, {"uuid": user_id, "username": username, "password": hash})
         db.commit()
 
-
     @staticmethod
     def login(username: str, password: str):
         user = User.get_by_name(username)
@@ -61,7 +60,6 @@ class User:
             return True
         else:
             return False
-            
 
     @staticmethod
     def get_pwhash(user_id: UUID):
@@ -74,6 +72,3 @@ class User:
     @staticmethod
     def logout():
         session["user_id"] = None
-
-         
-        

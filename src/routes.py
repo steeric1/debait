@@ -24,17 +24,24 @@ def register(app: Flask):
         form = request.form
 
         if not all([form["username"], form["password"]]):
-            return render_template("login.html", error="All required fields were not provided."), 400
+            return (
+                render_template(
+                    "login.html", error="All required fields were not provided."
+                ),
+                400,
+            )
 
         if User.login(form["username"], form["password"]):
             return redirect("/")
         else:
-            return render_template("login.html", error="Incorrect username or password.")
+            return render_template(
+                "login.html", error="Incorrect username or password."
+            )
 
     @app.get("/register")
     def register():
         return render_template("register.html")
-    
+
     @app.post("/register")
     def handle_register():
         form = request.form
@@ -43,7 +50,11 @@ def register(app: Flask):
         if not all([form["username"], form["password"], form["confirm-password"]]):
             error = "All required fields were not provided."
         else:
-            username, password, confirm_password = form["username"], form["password"], form["confirm-password"]
+            username, password, confirm_password = (
+                form["username"],
+                form["password"],
+                form["confirm-password"],
+            )
 
             if password != confirm_password:
                 error = "The passwords do not match."
@@ -69,8 +80,10 @@ def register(app: Flask):
         if tag:
             posts = Post.get_posts(tag)
             print(posts)
-            return render_template("tag.html", tag=tag, posts=posts, user=User.current())
-        
+            return render_template(
+                "tag.html", tag=tag, posts=posts, user=User.current()
+            )
+
         abort(404)
 
     @app.get("/post/<id>")
@@ -78,8 +91,10 @@ def register(app: Flask):
         post = Post.get_by_id(id)
         if post:
             comments = Comment.comments_to_post(post.id)
-            return render_template("post.html", post=post, user=User.current(), comments=comments)
-            
+            return render_template(
+                "post.html", post=post, user=User.current(), comments=comments
+            )
+
         abort(404)
 
     @app.post("/post/<tag>")
@@ -92,7 +107,7 @@ def register(app: Flask):
 
         if not all([form["title"], form["content"]]):
             abort(400)
-        
+
         title, content = form["title"], form["content"]
 
         Post.create(tag, title, content, user)
@@ -120,6 +135,6 @@ def decode_param(param: bytes):
     try:
         decoded = base64.b64decode(param).decode()
     except:
-        decoded = "" 
+        decoded = ""
 
     return decoded
