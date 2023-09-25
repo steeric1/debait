@@ -74,17 +74,10 @@ def register(app: Flask):
         User.logout()
         return redirect("/")
 
-    @app.get("/browse")
-    def browse():
-        tag = request.args.get("tag")
-        if tag:
-            posts = Post.get_posts(tag)
-            print(posts)
-            return render_template(
-                "tag.html", tag=tag, posts=posts, user=User.current()
-            )
-
-        abort(404)
+    @app.get("/tag/<tag>")
+    def tag(tag: str):
+        posts = Post.get_posts(tag)
+        return render_template("tag.html", tag=tag, posts=posts, user=User.current())
 
     @app.get("/post/<id>")
     def post_get(id: int):
