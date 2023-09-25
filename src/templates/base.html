@@ -1,12 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html class="dark font-['Exo_2']">
     <head>
         {% block head %}
             <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/output.css') }}">
+
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+            
             <title>{% block title %}{% endblock %} - Debait</title>
         {% endblock %}
     </head>
-    <body>
+    <body class="dark:bg-primary-bg">
+        <nav class="dark:bg-primary-fg py-4 px-52 flex items-center justify-between">
+            <a href="/" class="flex items-center">
+                <span class="font-semibold text-3xl dark:text-white font-['Sedgwick_Ave_Display']">Debait.</span>
+            </a>
+
+            <form id="search-form">
+                <input type="text" placeholder="Browse..." class="dark:bg-gray-700 rounded-lg text-white text-sm">
+                <button type="submit" value="Go!" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500 text-sm">Go!</button>
+            </form>
+
+            {% if not user %}
+                <div class="text-sm">
+                    <a href="/login" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500">
+                        Log in
+                    </a>
+                    <a href="/register" class="border-white border-solid border-2 m-1 px-3 py-2 rounded-lg font-semibold text-white hover:border-gray-400 hover:text-gray-400">
+                        Register
+                    </a>
+                </div>
+            {% else %}
+                <div>
+                    <span class="text-white font-semibold">Logged in as</span>
+                    <span class="text-white font-normal ml-1">{{ user.name }}</span>
+                </div>
+            {% endif %}
+        </nav>
+
         <section id="site-content">
             {% block content %}
             {% endblock %}
@@ -15,3 +47,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
     </body>
 </html>
+
+<script>
+    let form = document.getElementById("search-form");
+    form.onsubmit = (event) => {
+        event.preventDefault();
+    }
+</script>
