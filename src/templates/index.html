@@ -1,19 +1,4 @@
-<title>Debait - Forum for Debate</title>
+{% extends "base.html" %}
+
+{% block title %}Forum for Debate{% endblock %}
 <h1>Debait</h1>
-
-{% if user %}
-    <p>You're logged in as <strong>{{ user.name }}</strong>.</p>
-    <form action="/logout" method="POST">
-        <input type="submit" value="Log out">
-    </form>
-{% else %}
-    <p>You're not logged in. <a href="/login">Log in.</a></p>
-{% endif %}
-
-<form action="/browse" method="GET">
-    <h3>Browse tags</h3>
-    <label for="tag">Tag: <input type="text" id="tag" name="tag"></label>
-    <br>
-    <br>
-    <input type="submit" value="Go">
-</form>
