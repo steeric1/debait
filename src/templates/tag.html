@@ -58,10 +58,10 @@
             "content": document.getElementById("content").value,
         };
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const tag = urlParams.get("tag");
+        let lastSlash = window.location.href.lastIndexOf("/");
+        let url = `/post${window.location.href.substring(lastSlash)}`;
 
-        fetch(`post/${tag}`, {
+        fetch(url, {
             method: "POST",
             headers:{
                 "Content-Type": "application/x-www-form-urlencoded"
