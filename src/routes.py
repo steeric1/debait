@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, abort
 from users import User
 from posts import Post
 from comments import Comment
+from votes import Vote
 import base64
 
 
@@ -77,7 +78,12 @@ def register(app: Flask):
     @app.get("/tag/<tag>")
     def tag(tag: str):
         posts = Post.get_posts(tag)
-        return render_template("tag.html", tag=tag, posts=posts, user=User.current())
+        vote_scores = {post_id: Vote.calculate(post_id) for post_id in map(lambda post: post.id, posts)}
+        
+        user = User.current()
+        user_votes = {post_id: Vote.get_user_vote(post_id, user) for post_id in map(lambda post: post.id, posts)} if user else None
+
+        return render_template("tag.html", tag=tag, posts=posts, user=User.current(), vote_scores=vote_scores, user_votes=user_votes)
 
     @app.get("/post/<id>")
     def post_get(id: int):
@@ -118,6 +124,47 @@ def register(app: Flask):
 
         Comment.create(post_id, form["content"], user)
         return ""
+
+    @app.post("/upvote/<post_id>")
+    def upvote(post_id: int):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        if Post.get_by_id(post_id):
+            Vote.upvote(post_id, user)
+        else:
+            abort(400)
+
+        return ""        
+
+    @app.delete("/upvote/<post_id>")
+    def delete_upvote(post_id: int):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        Vote.delete(post_id, user)
+        return ""
+    
+    @app.post("/downvote/<post_id>")
+    def downvote(post_id: int):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        Vote.downvote(post_id, user)
+        return ""
+
+    @app.delete("/downvote/<post_id>")
+    def delete_downvote(post_id: int):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        Vote.delete(post_id, user)
+        return ""
+        
 
 
 def encode_param(param: str):
