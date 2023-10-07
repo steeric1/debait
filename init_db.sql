@@ -23,3 +23,12 @@ CREATE TABLE comments (
     FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY(author_id) REFERENCES users(uid) on DELETE SET NULL
 );
+
+CREATE TABLE votes (
+    post_id INT,
+    user_id UUID,
+    effect INT,
+    PRIMARY KEY(post_id, user_id),
+    FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES users(uid) ON DELETE CASCADE
+);
