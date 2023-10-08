@@ -49,105 +49,109 @@
             </div>
         </form>
 
-        <div class="px-6 mt-4">
+        <div class="px-6 mt-4 pb-2">
             <h2 class="text-gray-200 text-2xl font-semibold">Latest posts</h2>
 
-            {% for post in posts|reverse %}
-                <div class="hover:bg-slate-900 rounded-lg p-4 mt-4 ml-2 pt-3 cursor-pointer" id="post-{{ loop.index }}">
-                    <div class="text-white text-sm">
-                        <div>
-                            <span class="text-xs">by&nbsp;</span>
-                            <strong>{{ post.author.name }}</strong>
-                            <span>&nbsp;&middot;&nbsp;</span>
-                            <span class="text-xs">
-                                <strong>{{ post.timestamp.strftime("%H:%M") }}</strong>
-                                &nbsp;on&nbsp;
-                                <strong>{{ post.timestamp.strftime("%d %b, %Y") }}</strong>
-                            </span>
-                        </div>
-                        
-                        <h3 class="text-white text-xl mt-1 font-medium">{{ post.title }}</h3>
+            {% if posts|length > 0 %}
+                {% for post in posts|reverse %}
+                    <div class="hover:bg-slate-900 rounded-lg p-4 mt-4 ml-2 pt-3 cursor-pointer" id="post-{{ loop.index }}">
+                        <div class="text-white text-sm">
+                            <div>
+                                <span class="text-xs">by&nbsp;</span>
+                                <strong>{{ post.author.name }}</strong>
+                                <span>&nbsp;&middot;&nbsp;</span>
+                                <span class="text-xs">
+                                    <strong>{{ post.timestamp.strftime("%H:%M") }}</strong>
+                                    &nbsp;on&nbsp;
+                                    <strong>{{ post.timestamp.strftime("%d %b, %Y") }}</strong>
+                                </span>
+                            </div>
+                            
+                            <h3 class="text-white text-xl mt-1 font-medium">{{ post.title }}</h3>
 
-                        <div class="mx-4 mt-2 text-xs text-gray-200">
-                            {{ post.content }}
-                        </div>
+                            <div class="mx-4 mt-2 text-xs text-gray-200">
+                                {{ post.content }}
+                            </div>
 
-                        <div class="mt-4 flex flex-row gap-4 items-center">
-                            <div class="flex flex-row gap-2">
-                                <button
-                                    type="button"
-                                    class="flex flex-row items-center justify-start gap-2 p-2 rounded-md upvote-btn 
-                                        {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
-                                        {% if user_votes and user_votes[post.id] == 1 %} text-cyan-600 {% endif %}
-                                    "
-                                    {% if not user %}
-                                        title="Log in to vote."
-                                    {% endif %}
+                            <div class="mt-4 flex flex-row gap-4 items-center">
+                                <div class="flex flex-row gap-2">
+                                    <button
+                                        type="button"
+                                        class="flex flex-row items-center justify-start gap-2 p-2 rounded-md upvote-btn 
+                                            {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
+                                            {% if user_votes and user_votes[post.id] == 1 %} text-cyan-600 {% endif %}
+                                        "
+                                        {% if not user %}
+                                            title="Log in to vote."
+                                        {% endif %}
 
-                                    {% if user_votes[post.id] == 1 %}
-                                        data-voted
-                                    {% endif %}
-                                >
-                                    <i class="fa-solid fa-angle-up text-lg"></i>
-                                </button>
-                                <div class="flex flex-row items-center {% if user_votes and user_votes[post.id] != 0 %} text-cyan-600 font-semibold {% endif %}">
-                                    {{ vote_scores[post.id] }}
+                                        {% if user_votes[post.id] == 1 %}
+                                            data-voted
+                                        {% endif %}
+                                    >
+                                        <i class="fa-solid fa-angle-up text-lg"></i>
+                                    </button>
+                                    <div class="flex flex-row items-center {% if user_votes and user_votes[post.id] != 0 %} text-cyan-600 font-semibold {% endif %}">
+                                        {{ vote_scores[post.id] }}
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="flex flex-row items-center justify-start gap-2 p-2 rounded-md downvote-btn
+                                            {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
+                                            {% if user_votes and user_votes[post.id] == -1 %} text-cyan-600 {% endif %}
+                                        "
+                                        {% if not user %}
+                                            title="Log in to vote."
+                                        {% endif %}
+
+                                        {% if user_votes[post.id] == -1 %}
+                                            data-voted
+                                        {% endif %}
+                                    >
+                                        <i class="fa-solid fa-angle-down text-lg"></i>
+                                    </button>
                                 </div>
-                                <button
-                                    type="button"
-                                    class="flex flex-row items-center justify-start gap-2 p-2 rounded-md downvote-btn
-                                        {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
-                                        {% if user_votes and user_votes[post.id] == -1 %} text-cyan-600 {% endif %}
-                                    "
-                                    {% if not user %}
-                                        title="Log in to vote."
-                                    {% endif %}
-
-                                    {% if user_votes[post.id] == -1 %}
-                                        data-voted
-                                    {% endif %}
-                                >
-                                    <i class="fa-solid fa-angle-down text-lg"></i>
+                                <button type="button" class="flex flex-row items-center justify-start gap-2 p-2 rounded-md hover:bg-slate-800">
+                                    <i class="fa-regular fa-comment text-lg"></i>
+                                    <span>{{ num_comments[post.id] }}</span>
                                 </button>
                             </div>
-                            <button type="button" class="flex flex-row items-center justify-start gap-2 p-2 rounded-md hover:bg-slate-800">
-                                <i class="fa-regular fa-comment text-lg"></i>
-                                <span>{{ num_comments[post.id] }}</span>
-                            </button>
                         </div>
+
+                        <hr class="!border-t-[1px] !border-t-gray-400 mt-4">
                     </div>
 
-                    <hr class="!border-t-[1px] !border-t-gray-400 mt-4">
-                </div>
+                    <script>
+                        (() => {
+                            let post = document.getElementById("post-{{ loop.index }}");
+                            let upvoteBtn = post.querySelector(".upvote-btn");
+                            let downvoteBtn = post.querySelector(".downvote-btn");
 
-                <script>
-                    (() => {
-                        let post = document.getElementById("post-{{ loop.index }}");
-                        let upvoteBtn = post.querySelector(".upvote-btn");
-                        let downvoteBtn = post.querySelector(".downvote-btn");
+                            const wasClicked = (ev, node) => {
+                                return ev.target == node || node.contains(ev.target);
+                            };
 
-                        const wasClicked = (ev, node) => {
-                            return ev.target == node || node.contains(ev.target);
-                        };
-
-                        post.onclick = (ev) => {
-                            if (wasClicked(ev, upvoteBtn)) {
-                                if (typeof upvote !== "undefined") {
-                                    typeof upvoteBtn.dataset.voted === "undefined" ? upvote("{{ post.id }}") : deleteUpvote("{{ post.id }}");
+                            post.onclick = (ev) => {
+                                if (wasClicked(ev, upvoteBtn)) {
+                                    if (typeof upvote !== "undefined") {
+                                        typeof upvoteBtn.dataset.voted === "undefined" ? upvote("{{ post.id }}") : deleteUpvote("{{ post.id }}");
+                                    }
                                 }
-                            }
-                            else if (wasClicked(ev, downvoteBtn)) {
-                                if (typeof downvote !== "undefined") {
-                                    typeof downvoteBtn.dataset.voted === "undefined" ? downvote("{{ post.id }}") : deleteDownvote("{{ post.id }}");
+                                else if (wasClicked(ev, downvoteBtn)) {
+                                    if (typeof downvote !== "undefined") {
+                                        typeof downvoteBtn.dataset.voted === "undefined" ? downvote("{{ post.id }}") : deleteDownvote("{{ post.id }}");
+                                    }
                                 }
-                            }
-                            else {
-                                window.location.href = "/post/{{ post.id }}";
-                            }
-                        };
-                    })();
-                </script>
-            {% endfor %}
+                                else {
+                                    window.location.href = "/post/{{ post.id }}";
+                                }
+                            };
+                        })();
+                    </script>
+                {% endfor %}
+            {% else %}
+                <div class="text-white mt-4 text-sm">No posts yet.</div>
+            {% endif %}
         </div>
 
     <script>
