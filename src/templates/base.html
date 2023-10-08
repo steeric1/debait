@@ -14,40 +14,42 @@
         {% endblock %}
     </head>
     <body class="dark:bg-primary-bg">
-        <nav class="dark:bg-primary-fg py-4 px-52 flex items-center justify-between shadow-md">
-            <a href="/" class="flex items-center">
-                <span class="font-semibold text-5xl dark:text-white font-['Sedgwick_Ave_Display']">Debait.</span>
-            </a>
+        {% block navbar %}
+            <nav class="dark:bg-primary-fg py-4 px-52 flex items-center justify-between shadow-md">
+                <a href="/" class="flex items-center">
+                    <span class="font-semibold text-5xl dark:text-white font-['Sedgwick_Ave_Display']">Debait.</span>
+                </a>
 
-            <form id="search-form">
-                <input type="text" placeholder="Browse..." id="search-tag" class="dark:bg-gray-700 rounded-lg text-white text-sm placeholder-gray-400 placeholder:text-sm" required>
-                <button type="submit" value="Go!" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500 text-sm">Go!</button>
-            </form>
+                <form id="search-form">
+                    <input type="text" placeholder="Browse..." id="search-tag" class="dark:bg-gray-700 rounded-lg text-white text-sm placeholder-gray-400 placeholder:text-sm" required>
+                    <button type="submit" value="Go!" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500 text-sm">Go!</button>
+                </form>
 
-            <div class="text-sm">
-                {% if not user %}
-                    <a href="/login" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500">
-                        Log in
-                    </a>
-                    <a href="/register" class="border-white border-solid border-2 m-1 px-3 py-2 rounded-lg font-semibold text-white hover:border-gray-400 hover:text-gray-400">
-                        Register
-                    </a>
-                {% else %}
-                    <button data-dropdown-toggle="profile-menu" class="text-white font-semibold text-base hover:text-gray-400">{{ user.name }}</button>
-                    <div id="profile-menu" class="hidden">
-                        <div class="flex flex-col gap-3 bg-primary-fg p-4 border-white border-solid border-2 rounded-lg text-gray-200 text-sm">
-                            <a href="/" class="hover:text-gray-400">
-                                View profile
-                            </a>
-                            <hr>
-                            <button id="logout-button" class="hover:text-gray-400">
-                                Log out
-                            </button>
+                <div class="text-sm">
+                    {% if not user %}
+                        <a href="/login" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500">
+                            Log in
+                        </a>
+                        <a href="/register" class="border-white border-solid border-2 m-1 px-3 py-2 rounded-lg font-semibold text-white hover:border-gray-400 hover:text-gray-400">
+                            Register
+                        </a>
+                    {% else %}
+                        <button data-dropdown-toggle="profile-menu" class="text-white font-semibold text-base hover:text-gray-400">{{ user.name }}</button>
+                        <div id="profile-menu" class="hidden">
+                            <div class="flex flex-col gap-3 bg-primary-fg p-4 border-white border-solid border-2 rounded-lg text-gray-200 text-sm">
+                                <a href="/" class="hover:text-gray-400">
+                                    View profile
+                                </a>
+                                <hr>
+                                <button id="logout-button" class="hover:text-gray-400">
+                                    Log out
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                {% endif %}
-            </div>
-        </nav>
+                    {% endif %}
+                </div>
+            </nav>
+        {% endblock %}
 
         <section id="site-content">
             {% block content %}
