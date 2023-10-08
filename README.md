@@ -12,6 +12,8 @@
 
 ## How to run
 
+**Note:** This application is not testable in production (not yet, anyway).
+
 *Prerequisite*: A PostgreSQL instance running. Create the schema for this application using `init_db.sql`
 
 Install dependencies:
