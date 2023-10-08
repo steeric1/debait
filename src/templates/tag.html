@@ -62,7 +62,7 @@
                                     type="button"
                                     class="flex flex-row items-center justify-start gap-2 p-2 rounded-md upvote-btn 
                                         {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
-                                        {% if user_votes[post.id] == 1 %} text-cyan-600 {% endif %}
+                                        {% if user_votes and user_votes[post.id] == 1 %} text-cyan-600 {% endif %}
                                     "
                                     {% if not user %}
                                         title="Log in to vote."
@@ -74,14 +74,14 @@
                                 >
                                     <i class="fa-solid fa-angle-up text-lg"></i>
                                 </button>
-                                <div class="flex flex-row items-center {% if user_votes[post.id] != 0 %} text-cyan-600 font-semibold {% endif %}">
+                                <div class="flex flex-row items-center {% if user_votes and user_votes[post.id] != 0 %} text-cyan-600 font-semibold {% endif %}">
                                     {{ vote_scores[post.id] }}
                                 </div>
                                 <button
                                     type="button"
                                     class="flex flex-row items-center justify-start gap-2 p-2 rounded-md downvote-btn
                                         {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
-                                        {% if user_votes[post.id] == -1 %} text-cyan-600 {% endif %}
+                                        {% if user_votes and user_votes[post.id] == -1 %} text-cyan-600 {% endif %}
                                     "
                                     {% if not user %}
                                         title="Log in to vote."
@@ -96,7 +96,7 @@
                             </div>
                             <button type="button" class="flex flex-row items-center justify-start gap-2 p-2 rounded-md hover:bg-slate-800">
                                 <i class="fa-regular fa-comment text-lg"></i>
-                                <span>16</span>
+                                <span>{{ num_comments[post.id] }}</span>
                             </button>
                         </div>
                     </div>

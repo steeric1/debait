@@ -83,7 +83,9 @@ def register(app: Flask):
         user = User.current()
         user_votes = {post_id: Vote.get_user_vote(post_id, user) for post_id in map(lambda post: post.id, posts)} if user else None
 
-        return render_template("tag.html", tag=tag, posts=posts, user=User.current(), vote_scores=vote_scores, user_votes=user_votes)
+        num_comments = {post_id: len(Comment.comments_to_post(post_id)) for post_id in map(lambda post: post.id, posts)}
+
+        return render_template("tag.html", tag=tag, posts=posts, user=User.current(), vote_scores=vote_scores, user_votes=user_votes, num_comments=num_comments)
 
     @app.get("/post/<id>")
     def post_get(id: int):
