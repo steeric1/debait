@@ -32,3 +32,10 @@ CREATE TABLE votes (
     FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(uid) ON DELETE CASCADE
 );
+
+CREATE TABLE subscriptions (
+    user_id UUID,
+    tag TEXT,
+    PRIMARY KEY(user_id, tag),
+    FOREIGN KEY(user_id) REFERENCES users(uid) ON DELETE CASCADE
+);

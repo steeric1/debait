@@ -3,6 +3,7 @@ from users import User
 from posts import Post
 from comments import Comment
 from votes import Vote
+from subscriptions import Subscription
 import base64
 
 
@@ -82,10 +83,11 @@ def register(app: Flask):
         
         user = User.current()
         user_votes = {post_id: Vote.get_user_vote(post_id, user) for post_id in map(lambda post: post.id, posts)} if user else None
+        subscribed = Subscription.is_subscribed(user, tag) if user else False
 
         num_comments = {post_id: len(Comment.comments_to_post(post_id)) for post_id in map(lambda post: post.id, posts)}
 
-        return render_template("tag.html", tag=tag, posts=posts, user=User.current(), vote_scores=vote_scores, user_votes=user_votes, num_comments=num_comments)
+        return render_template("tag.html", tag=tag, posts=posts, user=User.current(), vote_scores=vote_scores, user_votes=user_votes, num_comments=num_comments, subscribed=subscribed)
 
     @app.get("/post/<id>")
     def post_get(id: int):
@@ -166,8 +168,25 @@ def register(app: Flask):
 
         Vote.delete(post_id, user)
         return ""
-        
 
+    @app.post("/subscribe/<tag>")
+    def subscribe(tag: str):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        Subscription.create(tag, user)
+        return ""
+
+    @app.delete("/subscribe/<tag>")
+    def unsubscribe(tag: str):
+        user = User.current()
+        if not user:
+            abort(403)
+
+        Subscription.delete(tag, user)
+        return ""
+        
 
 def encode_param(param: str):
     return base64.b64encode(param.encode())
