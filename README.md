@@ -6,6 +6,9 @@
 * Browsing tags
 * Creating posts on tags and reading them
 * Commenting posts
+* Upvoting and downvoting posts
+* Subscribing and unsubscribing to tags (though there's no feed yet, so this doesn't really do much right now)
+* Visually it's starting to look nicer
 
 ## How to run
 
