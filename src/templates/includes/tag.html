@@ -1,51 +1,74 @@
-<div class="flex flex-row items-center justify-between">
-    <div class="flex flex-row items-center justify-start">
-        <div class="text-white text-8xl mb-3 mr-3 font-bold">@</div>
-        <h1 class="text-gray-200 text-5xl font-bold">general</h1>
-    </div>
+{% if header|default(true) %}
+    <div class="mb-4">
+        <div class="flex flex-row items-center justify-between">
+            <div class="flex flex-row items-center justify-start">
+                <div class="text-white text-8xl mb-3 mr-3 font-bold">@</div>
+                <h1 class="text-gray-200 text-5xl font-bold">{{ tag }}</h1>
+            </div>
 
-    <div class="flex flex-row items-center justify-end gap-3">
-        {% if user %}
-            <button id="create-post-btn" class="text-black text-md bg-cyan-600 px-5 rounded-3xl font-semibold hover:bg-cyan-500 active:bg-cyan-600 h-14" onclick="showPostForm()">Create a post</button>
-        {% else %}
-            <div class="text-base text-white font-semibold">Login to create a post</div>
-        {% endif %}
-    </div>
-</div>
+            <div class="flex flex-row items-center justify-end gap-3">
+                {% if user %}
+                    <button id="create-post-btn" class="text-black text-md bg-cyan-600 px-5 rounded-3xl font-semibold hover:bg-cyan-500 active:bg-cyan-600 h-14" onclick="showPostForm()">Create a post</button>
 
-<form id="post-form" class="px-6 mt-4" style="display: none;">
-    <div class="mb-6">
-        <label for="post-title" class="block mb-2 ml-1 text-base font-semibold text-gray-900 dark:text-white">Post title</label>
-        <input type="text" id="post-title" name="post-title" class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-200 focus:ring-blue-500 focus:border-blue-500 font-normal" placeholder="Write a provoking title here..." required>
-    </div>
-    <div class="mb-6">
-        <label for="post-content" class="block mb-2 ml-1 text-base font-semibold text-gray-900 dark:text-white">Post content</label>
-        <textarea id="post-content" name="post-content" rows="6" class="block p-2.5 w-full text-sm rounded-lg border bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="...and your spiciest opinions here" required></textarea>
-    </div>
-    
-    <div class="flex flex-row items-center justify-start gap-2">
-        <button type="submit" class="text-black font-semibold bg-cyan-600 hover:bg-cyan-500 focus:ring-4 focus:outline-none focus:ring-blue-800 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center h-10">Send post!</button>
-        <button type="button" id="close-post-form-btn" class="border-white border-solid border-2 m-1 px-3 py-2 rounded-lg font-medium text-white text-sm hover:border-gray-400 hover:text-gray-400 box-border h-10" onclick="hidePostForm()">&#10006;&nbsp;&nbsp;Close</button>
-    </div>
-</form>
+                    {% if subscribable|default(true) %}
+                        <button
+                            id="subscribe-btn"
+                            class="text-white text-md px-5 h-14 rounded-3xl font-semibold border-white border-2 hover:border-gray-400 hover:text-gray-400"
+                            {% if subscribed %}
+                                data-subscribed
+                            {% endif %}
+                        >
+                            {% if not subscribed %}    
+                                Subscribe
+                            {% else %}
+                                Unsubscribe
+                            {% endif %}
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
 
-<div class="px-6 mt-4 pb-2">
+        <form id="post-form" class="px-6 mt-4" style="display: none;">
+            <div class="mb-6">
+                <label for="post-title" class="block mb-2 ml-1 text-base font-semibold text-gray-900 dark:text-white">Post title</label>
+                <input type="text" id="post-title" name="post-title" class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-200 focus:ring-blue-500 focus:border-blue-500 font-normal" placeholder="Write a provoking title here..." required>
+            </div>
+            <div class="mb-6">
+                <label for="post-content" class="block mb-2 ml-1 text-base font-semibold text-gray-900 dark:text-white">Post content</label>
+                <textarea id="post-content" name="post-content" rows="6" class="block p-2.5 w-full text-sm rounded-lg border bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="...and your spiciest opinions here" required></textarea>
+            </div>
+            
+            <div class="flex flex-row items-center justify-start gap-2">
+                <button type="submit" class="text-black font-semibold bg-cyan-600 hover:bg-cyan-500 focus:ring-4 focus:outline-none focus:ring-blue-800 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center h-10">Send post!</button>
+                <button type="button" id="close-post-form-btn" class="border-white border-solid border-2 m-1 px-3 py-2 rounded-lg font-medium text-white text-sm hover:border-gray-400 hover:text-gray-400 box-border h-10" onclick="hidePostForm()">&#10006;&nbsp;&nbsp;Close</button>
+            </div>
+        </form>
+    </div>
+{% endif %}
+
+<div class="px-6 pb-2">
     <h2 class="text-gray-200 text-2xl font-semibold">Latest posts</h2>
 
-    {% if general_posts|length > 0 %}
-        {% for post in general_posts|reverse %}
+    {% if posts|length > 0 %}
+        {% for post in posts|reverse %}
             <div class="hover:bg-slate-900 rounded-lg p-4 mt-4 ml-2 pt-3 cursor-pointer" id="post-{{ loop.index }}">
                 <div class="text-white text-sm">
-                    <div>
-                        <span class="text-xs">by&nbsp;</span>
-                        <strong>{{ post.author.name }}</strong>
+                    {% if show_post_tag|default(false) %}
+                        <span class="text-xs">on&nbsp;</span>
+                        <strong>@{{ post.tag }}</strong>
                         <span>&nbsp;&middot;&nbsp;</span>
-                        <span class="text-xs">
-                            <strong>{{ post.timestamp.strftime("%H:%M") }}</strong>
-                            &nbsp;on&nbsp;
-                            <strong>{{ post.timestamp.strftime("%d %b, %Y") }}</strong>
-                        </span>
-                    </div>
+                    {% endif %}
+
+                    <span class="text-xs">by&nbsp;</span>
+                    <strong>{{ post.author.name }}</strong>
+                    <span>&nbsp;&middot;&nbsp;</span>
+
+                    <span class="text-xs">
+                        <strong>{{ post.timestamp.strftime("%H:%M") }}</strong>
+                        &nbsp;on&nbsp;
+                        <strong>{{ post.timestamp.strftime("%d %b, %Y") }}</strong>
+                    </span>
                     
                     <h3 class="text-white text-xl mt-1 font-medium">{{ post.title }}</h3>
 
@@ -123,7 +146,15 @@
                             }
                         }
                         else {
-                            window.location.href = "/post/{{ post.id }}";
+                            let backTo = "{{ back_to_from_post|default('') }}";
+                            let backToDisplay = "{{ back_to_from_post_display|default('') }}";
+
+                            let urlParams = [];
+                            urlParams.push(backTo !== "" ? `back_to=${backTo}` : "");
+                            urlParams.push(backToDisplay !== "" ? `back_to_display=${backToDisplay}` : "");
+
+                            urlParams = urlParams.join("&");
+                            window.location.href = `/post/{{ post.id }}${urlParams !== "" ? `?${urlParams}` : ""}`;
                         }
                     };
                 })();
@@ -133,7 +164,7 @@
         <div class="text-white mt-4 text-sm">No posts yet.</div>
     {% endif %}
 </div>
-
+    
 <script>
     let postForm = document.getElementById("post-form");
     let createPostBtn = document.getElementById("create-post-btn");
@@ -185,3 +216,39 @@
         });
     };
 </script>
+
+{% if user %}
+    <script>
+        const upvote = (id) => {
+            fetch(`/upvote/${id}`, {
+                method: "POST",
+            }).then(() => {
+                window.location.reload();
+            });
+        };
+
+        const downvote = (id) => {
+            fetch(`/downvote/${id}`, {
+                method: "POST",
+            }).then(() => {
+                window.location.reload();
+            });
+        };
+    
+        const deleteUpvote = (id) => {
+            fetch(`/upvote/${id}`, {
+                method: "DELETE"
+            }).then(() => {
+                window.location.reload()
+            })
+        };
+
+        const deleteDownvote = (id) => {
+            fetch(`/downvote/${id}`, {
+                method: "DELETE"
+            }).then(() => {
+                window.location.reload()
+            })
+        };
+    </script>
+{% endif %}

@@ -13,11 +13,12 @@
 
 {% block content %}
     <div class="w-10/12 mx-auto bg-primary-fg my-4 rounded-md shadow-md pb-4 px-8 pt-4 text-white">
-        <a href="/tag/{{ post.tag }}" class="text-gray-200 text-lg">
+        <a href="{{ request.args.get('back_to', '/tag/' + post.tag) }}" class="text-gray-200 text-lg">
             <i class="fa-solid fa-angle-left"></i>
             &nbsp;
-            Back to <span class="font-semibold text-white">@{{ post.tag }}</span>
+            Back to <span id="back-to-display" class="font-semibold text-white">{{ request.args.get("back_to_display", "@" + post.tag) }}</span>
         </a>
+
         <h1 class="text-white text-5xl font-bold mt-2">{{ post.title }}</h1>
         
         <div class="mt-2 ml-1">

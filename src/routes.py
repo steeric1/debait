@@ -4,26 +4,52 @@ from posts import Post
 from comments import Comment
 from votes import Vote
 from subscriptions import Subscription
-import base64
+from typing import List
 
 
 def register(app: Flask):
     @app.get("/")
     def index():
-        (
-            general_posts,
-            general_vote_scores,
-            general_user_votes,
-            _,
-            general_num_comments,
-        ) = get_tag_data("general")
+        return redirect("/general")
+
+    @app.get("/general")
+    def general():
+        (posts, vote_scores, user_votes, num_comments, _) = get_tag_data("general")
         return render_template(
             "index.html",
+            active="general",
+            tag="general",
+            posts=posts,
+            subscribable=False,
+            back_to_from_post="/general",
+            back_to_from_post_display="General",
             user=User.current(),
-            general_posts=general_posts,
-            general_vote_scores=general_vote_scores,
-            general_user_votes=general_user_votes,
-            general_num_comments=general_num_comments,
+            vote_scores=vote_scores,
+            user_votes=user_votes,
+            num_comments=num_comments,
+        )
+
+    @app.get("/subscribed")
+    def subscribed():
+        user = User.current()
+        if user is None:
+            return redirect("/general")
+
+        posts = Subscription.subscribed_posts(user)
+        vote_scores, user_votes, num_comments = get_posts_data(posts)
+
+        return render_template(
+            "index.html",
+            active="subscribed",
+            header=False,
+            show_post_tag=True,
+            back_to_from_post="/subscribed",
+            back_to_from_post_display="Subscribed",
+            posts=posts,
+            user=User.current(),
+            vote_scores=vote_scores,
+            user_votes=user_votes,
+            num_comments=num_comments,
         )
 
     @app.get("/login")
@@ -91,7 +117,7 @@ def register(app: Flask):
 
     @app.get("/tag/<tag>")
     def tag(tag: str):
-        posts, vote_scores, user_votes, subscribed, num_comments = get_tag_data(tag)
+        posts, vote_scores, user_votes, num_comments, subscribed = get_tag_data(tag)
         return render_template(
             "tag.html",
             tag=tag,
@@ -185,6 +211,9 @@ def register(app: Flask):
 
     @app.post("/subscribe/<tag>")
     def subscribe(tag: str):
+        if tag == "general":
+            abort(404)
+
         user = User.current()
         if not user:
             abort(403)
@@ -194,6 +223,9 @@ def register(app: Flask):
 
     @app.delete("/subscribe/<tag>")
     def unsubscribe(tag: str):
+        if tag == "general":
+            abort(404)
+
         user = User.current()
         if not user:
             abort(403)
@@ -204,7 +236,15 @@ def register(app: Flask):
 
 def get_tag_data(tag: str):
     posts = Post.get_posts(tag)
+    vote_scores, user_votes, num_comments = get_posts_data(posts)
 
+    user = User.current()
+    subscribed = Subscription.is_subscribed(user, tag) if user else False
+
+    return posts, vote_scores, user_votes, num_comments, subscribed
+
+
+def get_posts_data(posts: List[Post]):
     vote_scores = {
         post_id: Vote.calculate(post_id) for post_id in map(lambda post: post.id, posts)
     }
@@ -218,24 +258,10 @@ def get_tag_data(tag: str):
         if user
         else None
     )
-    subscribed = Subscription.is_subscribed(user, tag) if user else False
 
     num_comments = {
         post_id: len(Comment.comments_to_post(post_id))
         for post_id in map(lambda post: post.id, posts)
     }
 
-    return posts, vote_scores, user_votes, subscribed, num_comments
-
-
-def encode_param(param: str):
-    return base64.b64encode(param.encode())
-
-
-def decode_param(param: bytes):
-    try:
-        decoded = base64.b64decode(param).decode()
-    except:
-        decoded = ""
-
-    return decoded
+    return vote_scores, user_votes, num_comments
