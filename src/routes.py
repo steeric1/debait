@@ -35,6 +35,7 @@ def register(app: Flask):
 
     @app.post("/login")
     def handle_login():
+        redirect_to = request.args.get("redirect_to", "/")
         form = request.form
 
         if not all([form["username"], form["password"]]):
@@ -46,7 +47,7 @@ def register(app: Flask):
             )
 
         if User.login(form["username"], form["password"]):
-            return redirect("/")
+            return redirect(f"{redirect_to}")
         else:
             return render_template(
                 "login.html", error="Incorrect username or password."

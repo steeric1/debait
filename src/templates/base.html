@@ -27,7 +27,7 @@
 
                 <div class="text-sm">
                     {% if not user %}
-                        <a href="/login" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500">
+                        <a href="/login?redirect_to={{ url_for(request.endpoint, **request.view_args) }}" class="bg-cyan-600 m-1 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500">
                             Log in
                         </a>
                         <a href="/register" class="border-white border-solid border-2 m-1 px-3 py-2 rounded-lg font-semibold text-white hover:border-gray-400 hover:text-gray-400">
