@@ -1,55 +1,108 @@
-<title>Debait - {{ post.title }}</title>
-<h1>{{ post.title }}</h1>
+{% extends "base.html" %}
 
-<p>
-    <strong>on</strong> {{ post.tag }}
-    <br>
-    <strong>posted by</strong> {{ post.author.name }} <strong>at</strong> {{ post.timestamp }}
-</p>
+{% block head %}
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous">
+    </script>
+    <script src="https://timeago.yarp.com/jquery.timeago.js"></script>
+{% endblock %}
 
-<p>
-    {{ post.content }}
-</p>
+{% block title %}{{ post.title }}{% endblock %}
 
-{% if user %}
-    <form id="comment-form">
-        <h3>Leave comment</h3>
-        <textarea cols="50" rows="6" name="content" id="content"></textarea>
-        <br>
-        <input type="submit" value="Send">
-    </form>
-{% else %}
-    <a href="/login">Login</a> to leave a comment.
-{% endif %}
+{% block content %}
+    <div class="w-10/12 mx-auto bg-primary-fg my-4 rounded-md shadow-md pb-4 px-8 pt-4 text-white">
+        <a href="/tag/{{ post.tag }}" class="text-gray-200 text-lg">
+            <i class="fa-solid fa-angle-left"></i>
+            &nbsp;
+            Back to <span class="font-semibold text-white">@{{ post.tag }}</span>
+        </a>
+        <h1 class="text-white text-5xl font-bold mt-2">{{ post.title }}</h1>
+        
+        <div class="mt-2 ml-1">
+            <i class="fa-solid fa-user inline-block mr-1"></i>
+            <span class="text-sm font-bold">{{ post.author.name }}</span>
+            <span>&nbsp;&middot;&nbsp;</span>
+            <span class="text-xs">
+                <strong>{{ post.timestamp.strftime("%H:%M") }}</strong>
+                &nbsp;on&nbsp;
+                <strong>{{ post.timestamp.strftime("%d %b, %Y") }}</strong>
+            </span>
+        </div>
 
-<h3>Comments</h3>
+        <div class="my-4 ml-4 text-base">
+            {{ post.content }}
+        </div>
+        
+        <h2 class="text-gray-200 text-xl font-semibold">
+            {{ comments|length }}
+            {% if comments|length == 1 %}
+                comment
+            {% else %}
+                comments
+            {% endif %}
+        </h2>
 
-{% for comment in comments|reverse %}
-    <p>
-        {{ comment.author.name }} <strong>said:</strong> {{ comment.content }}
-        <br>
-        <strong>at</strong> {{ comment.timestamp }}
-    </p>
-{% endfor %}
+        <div class="flex flex-col gap-4 my-2 ml-4">
+            {% for comment in comments|reverse %}
+                <div class="text-sm">
+                    <div>
+                        <i class="fa-solid fa-user inline-block mr-1 text-white"></i>
+                        <strong>{{ comment.author.name }}</strong>
+                        <span>&nbsp;&middot;&nbsp;</span>
+                        <time id="comment-timestamp-{{ comment.id }}" class="timeago text-xs" datetime=""></time>
+                    </div>
+                    
+                    <div class="mt-2 ml-2">
+                        {{ comment.content }}
+                    </div>
+                </div>
 
-<script>
-    let form = document.getElementById("comment-form");
-    form.onsubmit = (event) => {
-        event.preventDefault();
+                <script>
+                    (() => {
+                        jQuery("#comment-timestamp-{{ comment.id }}")
+                            .attr("datetime", new Date("{{ comment.timestamp }}").toISOString())
+                            .timeago();
+                    })();
+                </script>
+            {% endfor %}
+        </div>
 
-        let lastSlash = window.location.href.lastIndexOf("/");
-        let url = `/comment${window.location.href.substring(lastSlash)}`;
+        <div class="ml-4 mt-4">
+        {% if user %}
+            <h3 class="text-gray-200 text-md font-semibold mb-2">Leave comment</h3>
+            <form class="flex flex-col gap-2 items-start justify-start" id="comment-form">
+                <textarea id="comment-content" name="content" rows="6" class="block p-2.5 w-full text-sm rounded-lg border bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your comment..." required></textarea>
+                <button type="submit" class="text-black bg-cyan-600 px-3 py-2 rounded-lg font-semibold hover:bg-cyan-500 text-sm">Send</button>
+            </form>
+        {% else %}
+            <a href="/login" class="text-cyan-600 font-bold">Login</a> to leave a comment.
+        {% endif %}
+        </div>
 
-        let payload = {
-            "content": document.getElementById("content").value
-        };
+        <script>
+            (() => {
+                let form = document.getElementById("comment-form");
+                form.onsubmit = (event) => {
+                    event.preventDefault();
 
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams(payload)
-        }).then(() => window.location.reload());
-    }
-</script>
+                    let lastSlash = window.location.href.lastIndexOf("/");
+                    let url = `/comment${window.location.href.substring(lastSlash)}`;
+
+                    let payload = {
+                        "content": document.getElementById("comment-content").value
+                    };
+
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: new URLSearchParams(payload)
+                    }).then(() => window.location.reload());
+                }
+            })();
+        </script>
+    </div>
+{% endblock %}

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html class="dark font-['Exo_2']">
     <head>
-        {% block head %}
-            <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/output.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/output.css') }}">
 
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
 
-            <script src="https://kit.fontawesome.com/c2392353e9.js" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/c2392353e9.js" crossorigin="anonymous"></script>
+
+        {% block head %}{% endblock %}
             
-            <title>{% block title %}{% endblock %} - Debait</title>
-        {% endblock %}
+        <title>{% block title %}{% endblock %} - Debait</title>
     </head>
     <body class="dark:bg-primary-bg">
         {% block navbar %}
@@ -61,18 +61,20 @@
 </html>
 
 <script>
-    let form = document.getElementById("search-form");
-    form.onsubmit = (event) => {
-        event.preventDefault();
+    (() => {
+        let form = document.getElementById("search-form");
+        form.onsubmit = (event) => {
+            event.preventDefault();
 
-        let tag = document.getElementById("search-tag").value;
-        window.location.href = `/tag/${tag}`;
-    };
+            let tag = document.getElementById("search-tag").value;
+            window.location.href = `/tag/${tag}`;
+        };
 
-    let logoutBtn = document.getElementById("logout-button");
-    logoutBtn.onclick = () => {
-        fetch("/logout", {
-            method: "POST"
-        }).then(() => window.location.reload());
-    };
+        let logoutBtn = document.getElementById("logout-button");
+        logoutBtn.onclick = () => {
+            fetch("/logout", {
+                method: "POST"
+            }).then(() => window.location.reload());
+        };
+    })();
 </script>
