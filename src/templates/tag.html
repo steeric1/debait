@@ -13,23 +13,21 @@
             <div class="flex flex-row items-center justify-end gap-3">
                 {% if user %}
                     <button id="create-post-btn" class="text-black text-md bg-cyan-600 px-5 rounded-3xl font-semibold hover:bg-cyan-500 active:bg-cyan-600 h-14" onclick="showPostForm()">Create a post</button>
-                {% else %}
-                    <div class="text-base text-white font-semibold">Login to create a post</div>
-                {% endif %}
 
-                <button
-                    id="subscribe-btn"
-                    class="text-white text-md px-5 h-14 rounded-3xl font-semibold border-white border-2 hover:border-gray-400 hover:text-gray-400"
-                    {% if subscribed %}
-                        data-subscribed
-                    {% endif %}
-                >
-                    {% if not subscribed %}    
-                        Subscribe
-                    {% else %}
-                        Unsubscribe
-                    {% endif %}
-                </button>
+                    <button
+                        id="subscribe-btn"
+                        class="text-white text-md px-5 h-14 rounded-3xl font-semibold border-white border-2 hover:border-gray-400 hover:text-gray-400"
+                        {% if subscribed %}
+                            data-subscribed
+                        {% endif %}
+                    >
+                        {% if not subscribed %}    
+                            Subscribe
+                        {% else %}
+                            Unsubscribe
+                        {% endif %}
+                    </button>
+                {% endif %}
             </div>
         </div>
 
