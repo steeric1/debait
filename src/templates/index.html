@@ -11,10 +11,6 @@
             </div>
         </div>
 
-        <div class="w-10/12 mx-auto bg-primary-fg my-4 rounded-md shadow-md pb-4 px-8 {{ 'pt-0' if header else 'pt-4' }}">
-            {% include "includes/tag.html" %}
-        </div>
-
         <script>
             let generalBtn = document.getElementById("general-btn");
             let subscribedBtn = document.getElementById("subscribed-btn");
@@ -30,4 +26,8 @@
             };
         </script>
     {% endif %}
+        
+    <div class="w-10/12 mx-auto bg-primary-fg my-4 rounded-md shadow-md pb-4 px-8 {{ 'pt-0' if header else 'pt-4' }}">
+        {% include "includes/tag.html" %}
+    </div>
 {% endblock %}
