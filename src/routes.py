@@ -133,9 +133,18 @@ def register(app: Flask):
     def post_get(id: int):
         post = Post.get_by_id(id)
         if post:
+            user = User.current()
             comments = Comment.comments_to_post(post.id)
+            user_vote = Vote.get_user_vote(post.id, user) if user is not None else None
+            votes = Vote.calculate(post.id)
+
             return render_template(
-                "post.html", post=post, user=User.current(), comments=comments
+                "post.html",
+                post=post,
+                user=User.current(),
+                comments=comments,
+                votes=votes,
+                user_vote=user_vote,
             )
 
         abort(404)

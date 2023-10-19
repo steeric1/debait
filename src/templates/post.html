@@ -35,6 +35,52 @@
         <div class="my-4 ml-4 text-base">
             {{ post.content }}
         </div>
+
+        <div class="flex flex-row gap-2 mb-2">
+            <button
+                type="button"
+                class="flex flex-row items-center justify-start gap-2 p-2 rounded-md upvote-btn
+                    {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
+                    {% if user_vote == 1 %} text-cyan-600 {% endif %}
+                "
+                {% if user %}
+                    onclick="upvoteClicked()"
+                {% endif %}
+
+                {% if not user %}
+                    title="Log in to vote."
+                {% endif %}
+
+                {% if user_vote == 1 %}
+                    data-voted
+                {% endif %}
+            >
+                <i class="fa-solid fa-angle-up text-lg"></i>
+            </button>
+            <div class="flex flex-row items-center {% if user_vote and user_vote != 0 %} text-cyan-600 font-semibold {% endif %}">
+                {{ votes }}
+            </div>
+            <button
+                type="button"
+                class="flex flex-row items-center justify-start gap-2 p-2 rounded-md downvote-btn
+                    {% if user %} hover:bg-slate-800 {% else %} text-gray-500 cursor-not-allowed {% endif %}
+                    {% if user_vote == -1 %} text-cyan-600 {% endif %}
+                "
+                {% if user %}
+                    onclick="downvoteClicked()"
+                {% endif %}
+
+                {% if not user %}
+                    title="Log in to vote."
+                {% endif %}
+
+                {% if user_vote == -1 %}
+                    data-voted
+                {% endif %}
+            >
+                <i class="fa-solid fa-angle-down text-lg"></i>
+            </button>
+        </div>
         
         <h2 class="text-gray-200 text-xl font-semibold">
             {{ comments|length }}
@@ -105,5 +151,52 @@
                 }
             })();
         </script>
+
+        {% if user %}
+            <script>
+                let upvoteBtn = document.querySelector(".upvote-btn");
+                let downvoteBtn = document.querySelector(".downvote-btn");
+                
+                const upvoteClicked = () => {
+                    typeof upvoteBtn.dataset.voted === "undefined" ? upvote("{{ post.id }}") : deleteUpvote("{{ post.id }}");
+                };
+
+                const downvoteClicked = () => {
+                    typeof downvoteBtn.dataset.voted === "undefined" ? downvote("{{ post.id }}") : deleteDownvote("{{ post.id }}");
+                };
+
+                const upvote = (id) => {
+                    fetch(`/upvote/${id}`, {
+                        method: "POST",
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                };
+
+                const downvote = (id) => {
+                    fetch(`/downvote/${id}`, {
+                        method: "POST",
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                };
+            
+                const deleteUpvote = (id) => {
+                    fetch(`/upvote/${id}`, {
+                        method: "DELETE"
+                    }).then(() => {
+                        window.location.reload()
+                    })
+                };
+
+                const deleteDownvote = (id) => {
+                    fetch(`/downvote/${id}`, {
+                        method: "DELETE"
+                    }).then(() => {
+                        window.location.reload()
+                    })
+                };
+            </script>
+        {% endif %}
     </div>
 {% endblock %}
