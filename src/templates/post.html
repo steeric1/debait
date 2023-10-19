@@ -88,8 +88,8 @@
                 form.onsubmit = (event) => {
                     event.preventDefault();
 
-                    let lastSlash = window.location.href.lastIndexOf("/");
-                    let url = `/comment${window.location.href.substring(lastSlash)}`;
+                    let lastSlash = window.location.pathname.lastIndexOf("/");
+                    let url = `/comment${window.location.pathname.substring(lastSlash)}`;
 
                     let payload = {
                         "content": document.getElementById("comment-content").value
