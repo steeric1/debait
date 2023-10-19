@@ -122,6 +122,7 @@ def register(app: Flask):
             "tag.html",
             tag=tag,
             posts=posts,
+            subscribable=(tag != "general"),
             user=User.current(),
             vote_scores=vote_scores,
             user_votes=user_votes,
