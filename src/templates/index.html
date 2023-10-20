@@ -6,8 +6,8 @@
     {% if user %}
         <div class="flex flex-col items-center justify-start w-10/12 mx-auto my-4">
             <div class="flex flex-row items-center bg-primary-fg shadow-md rounded-2xl">
-                <button id="general-btn" data-state="{{ 'active' if active == 'general' else 'inactive' }}" class="flex flex-row items-center justify-end border-2 border-primary-fg text-white text-base w-72 pr-14 py-4 rounded-l-2xl data-[state=active]:font-normal data-[state=active]:border-white">General</button>
-                <button id="subscribed-btn" data-state="{{ 'active' if active == 'subscribed' else 'inactive' }}" class="flex flex-row items-center justify-start border-2 border-primary-fg text-white text-base w-72 pl-14 py-4 rounded-r-2xl data-[state=active]:font-normal data-[state=active]:border-white">Subscribed</button>
+                <button id="general-btn" data-state="{{ 'active' if active == 'general' else 'inactive' }}" class="flex flex-row items-center justify-end border-2 border-primary-fg text-white text-base w-52 pr-14 py-4 rounded-l-2xl data-[state=active]:font-normal data-[state=active]:border-white">General</button>
+                <button id="subscribed-btn" data-state="{{ 'active' if active == 'subscribed' else 'inactive' }}" class="flex flex-row items-center justify-start border-2 border-primary-fg text-white text-base w-52 pl-14 py-4 rounded-r-2xl data-[state=active]:font-normal data-[state=active]:border-white">Subscribed</button>
             </div>
         </div>
 
