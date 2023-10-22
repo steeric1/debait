@@ -7,8 +7,8 @@
 * Creating posts on tags and reading them
 * Commenting posts
 * Upvoting and downvoting posts
-* Subscribing and unsubscribing to tags (though there's no feed yet, so this doesn't really do much right now)
-* Visually it's starting to look nicer
+* Subscribing and unsubscribing to tags
+* Showing posts from subscribed tags
 
 ## How to run
 
@@ -30,7 +30,11 @@ Run the application with
 flask --app src/app.py run
 ```
 
-## Plan
+### Note about NPM
+
+I used NPM in this project for Tailwind CSS and Flowbite. However, it's practically only a development dependency, and you do not need to install the NPM dependencies of the project to run it.
+
+## Initial plan (a lot of this I didn't have time for)
 
 An online forum for debating and discussing various topics.
 * Users can start discussion threads with a tag. This tag determines the space in which the thread is stored in the application. A tag is essentially a channel.
