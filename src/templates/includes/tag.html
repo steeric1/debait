@@ -207,18 +207,20 @@
     };
 
     let subscribeBtn = document.getElementById("subscribe-btn");
-    subscribeBtn.onclick = (ev) => {
-        let method = typeof subscribeBtn.dataset.subscribed === "undefined" ? "POST" : "DELETE";
+    if (subscribeBtn) {
+        subscribeBtn.onclick = (ev) => {
+            let method = typeof subscribeBtn.dataset.subscribed === "undefined" ? "POST" : "DELETE";
 
-        let lastSlash = window.location.pathname.lastIndexOf("/");
-        let url = `/subscribe${window.location.pathname.substring(lastSlash)}`;
-        fetch(url, {
-            method: method,
-            body: csrfBody,
-        }).then(() => {
-            window.location.reload();
-        });
-    };
+            let lastSlash = window.location.pathname.lastIndexOf("/");
+            let url = `/subscribe${window.location.pathname.substring(lastSlash)}`;
+            fetch(url, {
+                method: method,
+                body: csrfBody,
+            }).then(() => {
+                window.location.reload();
+            });
+        };
+    }
 </script>
 
 {% if user %}

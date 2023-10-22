@@ -71,11 +71,13 @@
         };
 
         let logoutBtn = document.getElementById("logout-button");
-        logoutBtn.onclick = () => {
-            fetch("/logout", {
-                method: "POST",
-                body: new URLSearchParams({ csrf_token: "{{ session.csrf_token }}" })
-            }).then(() => window.location.reload());
-        };
+        if (logoutBtn) {
+            logoutBtn.onclick = () => {
+                fetch("/logout", {
+                    method: "POST",
+                    body: new URLSearchParams({ csrf_token: "{{ session.csrf_token }}" })
+                }).then(() => window.location.reload());
+            };
+        }
     })();
 </script>
