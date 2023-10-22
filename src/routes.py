@@ -1,10 +1,11 @@
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect, request, Request, abort, session
 from users import User
 from posts import Post
 from comments import Comment
 from votes import Vote
 from subscriptions import Subscription
 from typing import List
+import secrets
 
 
 def register(app: Flask):
@@ -73,6 +74,7 @@ def register(app: Flask):
             )
 
         if User.login(form["username"], form["password"]):
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect(f"{redirect_to}")
         else:
             return render_template(
@@ -108,10 +110,13 @@ def register(app: Flask):
             User.create(username, password)
             User.login(username, password)
 
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
 
     @app.post("/logout")
     def logout():
+        validate_csrf(request)
+
         User.logout()
         return redirect("/")
 
@@ -152,6 +157,8 @@ def register(app: Flask):
 
     @app.post("/post/<tag>")
     def post_post(tag: str):
+        validate_csrf(request)
+
         user = User.current()
         if not user:
             abort(403)
@@ -168,6 +175,8 @@ def register(app: Flask):
 
     @app.post("/comment/<post_id>")
     def comment(post_id: int):
+        validate_csrf(request)
+
         user = User.current()
         if not user:
             abort(403)
@@ -181,6 +190,8 @@ def register(app: Flask):
 
     @app.post("/upvote/<post_id>")
     def upvote(post_id: int):
+        validate_csrf(request)
+
         user = User.current()
         if not user:
             abort(403)
@@ -194,6 +205,8 @@ def register(app: Flask):
 
     @app.delete("/upvote/<post_id>")
     def delete_upvote(post_id: int):
+        validate_csrf(request)
+
         user = User.current()
         if not user:
             abort(403)
@@ -203,6 +216,8 @@ def register(app: Flask):
 
     @app.post("/downvote/<post_id>")
     def downvote(post_id: int):
+        validate_csrf(request)
+
         user = User.current()
         if not user:
             abort(403)
@@ -212,6 +227,8 @@ def register(app: Flask):
 
     @app.delete("/downvote/<post_id>")
     def delete_downvote(post_id: int):
+        validate_csrf(request)
+
         user = User.current()
         if not user:
             abort(403)
@@ -221,6 +238,8 @@ def register(app: Flask):
 
     @app.post("/subscribe/<tag>")
     def subscribe(tag: str):
+        validate_csrf(request)
+
         if tag == "general":
             abort(404)
 
@@ -233,6 +252,8 @@ def register(app: Flask):
 
     @app.delete("/subscribe/<tag>")
     def unsubscribe(tag: str):
+        validate_csrf(request)
+
         if tag == "general":
             abort(404)
 
@@ -275,3 +296,8 @@ def get_posts_data(posts: List[Post]):
     }
 
     return vote_scores, user_votes, num_comments
+
+
+def validate_csrf(request: Request):
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)

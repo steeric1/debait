@@ -73,7 +73,8 @@
         let logoutBtn = document.getElementById("logout-button");
         logoutBtn.onclick = () => {
             fetch("/logout", {
-                method: "POST"
+                method: "POST",
+                body: new URLSearchParams({ csrf_token: "{{ session.csrf_token }}" })
             }).then(() => window.location.reload());
         };
     })();

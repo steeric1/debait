@@ -138,7 +138,8 @@
                     let url = `/comment${window.location.pathname.substring(lastSlash)}`;
 
                     let payload = {
-                        "content": document.getElementById("comment-content").value
+                        "content": document.getElementById("comment-content").value,
+                        "csrf_token": "{{ session.csrf_token }}"
                     };
 
                     fetch(url, {
@@ -165,9 +166,12 @@
                     typeof downvoteBtn.dataset.voted === "undefined" ? downvote("{{ post.id }}") : deleteDownvote("{{ post.id }}");
                 };
 
+                let body = new URLSearchParams({ csrf_token: "{{ session.csrf_token }}"});
+
                 const upvote = (id) => {
                     fetch(`/upvote/${id}`, {
                         method: "POST",
+                        body,
                     }).then(() => {
                         window.location.reload();
                     });
@@ -176,6 +180,7 @@
                 const downvote = (id) => {
                     fetch(`/downvote/${id}`, {
                         method: "POST",
+                        body,
                     }).then(() => {
                         window.location.reload();
                     });
@@ -183,7 +188,8 @@
             
                 const deleteUpvote = (id) => {
                     fetch(`/upvote/${id}`, {
-                        method: "DELETE"
+                        method: "DELETE",
+                        body,
                     }).then(() => {
                         window.location.reload()
                     })
@@ -191,7 +197,8 @@
 
                 const deleteDownvote = (id) => {
                     fetch(`/downvote/${id}`, {
-                        method: "DELETE"
+                        method: "DELETE",
+                        body,
                     }).then(() => {
                         window.location.reload()
                     })

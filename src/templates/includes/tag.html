@@ -169,12 +169,15 @@
     let postForm = document.getElementById("post-form");
     let createPostBtn = document.getElementById("create-post-btn");
 
+    let csrfBody = new URLSearchParams({ csrf_token: "{{ session.csrf_token }}"});
+
     postForm.onsubmit = (event) => {
         event.preventDefault();
         
         let payload = {
             "title": document.getElementById("post-title").value,
             "content": document.getElementById("post-content").value,
+            "csrf_token": "{{ session.csrf_token }}"
         };
 
         let lastSlash = window.location.pathname.lastIndexOf("/");
@@ -185,7 +188,7 @@
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },    
-            body: new URLSearchParams(payload)
+            body: new URLSearchParams(payload),
         }).then(() => {
             hidePostForm();
             window.location.reload()
@@ -211,6 +214,7 @@
         let url = `/subscribe${window.location.pathname.substring(lastSlash)}`;
         fetch(url, {
             method: method,
+            body: csrfBody,
         }).then(() => {
             window.location.reload();
         });
@@ -219,9 +223,12 @@
 
 {% if user %}
     <script>
+        let body = new URLSearchParams({ csrf_token: "{{ session.csrf_token }}"});
+
         const upvote = (id) => {
             fetch(`/upvote/${id}`, {
                 method: "POST",
+                body: csrfBody,
             }).then(() => {
                 window.location.reload();
             });
@@ -230,6 +237,7 @@
         const downvote = (id) => {
             fetch(`/downvote/${id}`, {
                 method: "POST",
+                body: csrfBody,
             }).then(() => {
                 window.location.reload();
             });
@@ -237,7 +245,8 @@
     
         const deleteUpvote = (id) => {
             fetch(`/upvote/${id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                body: csrfBody,
             }).then(() => {
                 window.location.reload()
             })
@@ -245,7 +254,8 @@
 
         const deleteDownvote = (id) => {
             fetch(`/downvote/${id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                body: csrfBody,
             }).then(() => {
                 window.location.reload()
             })
