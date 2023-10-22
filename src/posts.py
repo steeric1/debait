@@ -30,6 +30,11 @@ class Post:
 
     @staticmethod
     def create(tag: str, title: str, content: str, author: User):
+        if len(title) > 200:
+            return "Sorry, the title is too long!"
+        elif len(content) > 5000:
+            return "Sorry, the post is too long!"
+
         query = """
             INSERT INTO posts (tag, title, content, author_id, posted_at)
             VALUES (:tag, :title, :content, :author, :timestamp)

@@ -28,6 +28,7 @@ def register(app: Flask):
             vote_scores=vote_scores,
             user_votes=user_votes,
             num_comments=num_comments,
+            error=session.pop("error", default=None),
         )
 
     @app.get("/subscribed")
@@ -51,6 +52,7 @@ def register(app: Flask):
             vote_scores=vote_scores,
             user_votes=user_votes,
             num_comments=num_comments,
+            error=session.pop("error", default=None),
         )
 
     @app.get("/login")
@@ -104,6 +106,9 @@ def register(app: Flask):
             elif User.get_by_name(username) is not None:
                 error = "A username by that name exists already."
 
+        if len(username) > 20:
+            error = "The username is too long."
+
         if error:
             return render_template("register.html", error=error), 400
         else:
@@ -133,6 +138,7 @@ def register(app: Flask):
             user_votes=user_votes,
             num_comments=num_comments,
             subscribed=subscribed,
+            error=session.pop("error", default=None),
         )
 
     @app.get("/post/<id>")
@@ -151,6 +157,7 @@ def register(app: Flask):
                 comments=comments,
                 votes=votes,
                 user_vote=user_vote,
+                error=session.pop("error", default=None),
             )
 
         abort(404)
@@ -170,7 +177,10 @@ def register(app: Flask):
 
         title, content = form["title"], form["content"]
 
-        Post.create(tag, title, content, user)
+        error = Post.create(tag, title, content, user)
+        if error:
+            session["error"] = error
+
         return ""
 
     @app.post("/comment/<post_id>")
@@ -185,7 +195,10 @@ def register(app: Flask):
         if not form["content"]:
             abort(400)
 
-        Comment.create(post_id, form["content"], user)
+        error = Comment.create(post_id, form["content"], user)
+        if error:
+            session["error"] = error
+
         return ""
 
     @app.post("/upvote/<post_id>")

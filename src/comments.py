@@ -19,6 +19,9 @@ class Comment:
 
     @staticmethod
     def create(post_id: int, content: str, author: User):
+        if len(content) > 5000:
+            return "Sorry, that's too long!"
+
         query = """INSERT INTO comments (post_id, content, author_id, commented_at) VALUES (:post_id, :content, :author, :commented_at)"""
         db.execute(
             query,
